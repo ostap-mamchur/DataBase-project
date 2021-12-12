@@ -8,7 +8,7 @@ const router = Router();
 
 const { Op } = sequelize;
 
-router.get("/", async (req, res) => {
+router.get("/func1", async (req, res) => {
   const { clientId, number, dateStart, dateEnd } = req.query;
   const clients = await HiringMeeting.findAll({
     raw: true,
@@ -36,6 +36,35 @@ router.get("/", async (req, res) => {
   });
   res.json(clients);
 });
+
+router.get("/func2", async (req, res) => {
+  const { hiredFriendId, number, dateStart, dateEnd } = req.query;
+  const clients = await HiringMeeting.findAll({
+    raw: true,
+    attributes: ["client.first_name"],
+    include: [
+      {
+        model: Client,
+        attributes: [],
+      },
+      {
+        model: Meeting,
+        attributes: [],
+        where: {
+          date: {
+            [Op.between]: [dateStart, dateEnd],
+          },
+        },
+      },
+    ],
+    where: {
+      hiredFriendId,
+    },
+    group: ["client.first_name"],
+    having: sequelize.literal(`COUNT(*) >= ${number}`),
+  });
+  res.json(clients);
+})
 
 router.post("/", async (req, res) => {
   const { meetingId, hiredFriendId, clientId } = req.body;
