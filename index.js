@@ -10,6 +10,8 @@ const meeting = require("./routes/meeting-router");
 
 const app = express();
 
+const PORT = process.env.APP_PORT || 8080;
+
 app.use(express.json());
 
 app.use("/hiring-meetings", hiringMeeting);
@@ -20,12 +22,12 @@ app.use("/clients", client);
 app.use("/hired-friends", hiredFriend);
 app.use("/meetings", meeting);
 
-db.sync(/* { force: true } */)
+db.sync()
   .then(() => {
     console.log("DB established");
   })
   .catch((err) => console.log(err));
 
-app.listen(8080, () => {
-  console.log("Server is running at 8080");
+app.listen(PORT, () => {
+  console.log(`Server is running at ${PORT}`);
 });
