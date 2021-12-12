@@ -38,26 +38,23 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const meeting = await Meeting.create({
-    name: "Credence",
-    address: "vul. Shevchenka",
-    date: new Date().toISOString(),
-  });
-  const hiredFriend = await HiredFriend.create({
-    firstName: "Ostap",
-    lastName: "Mamchur",
-  });
-  const client = await Client.create({
-    firstName: "Iryna",
-    lastName: "Maselko",
-  });
+  const { meetingId, hiredFriendId, clientId } = req.body;
+
+  const meeting = await Meeting.findByPk(meetingId);
+  const hiredFriend = await HiredFriend.findByPk(hiredFriendId);
+  const client = await Client.findByPk(clientId);
 
   const hiringMeeting = await HiringMeeting.create({});
 
-  meeting.setHiring_meetings([hiringMeeting]);
-  client.setHiring_meetings([hiringMeeting]);
-  hiredFriend.setHiring_meetings([hiringMeeting]);
-  res.json("ok");
+  meeting.addHiring_meetings([hiringMeeting]);
+  client.addHiring_meetings([hiringMeeting]);
+  hiredFriend.addHiring_meetings([hiringMeeting]);
+  res.json("Success");
+});
+
+router.get("/all", async (req, res) => {
+  const hiringMeetings = await HiringMeeting.findAll({ raw: true });
+  res.json(hiringMeetings);
 });
 
 module.exports = router;
