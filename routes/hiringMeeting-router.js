@@ -129,6 +129,30 @@ router.get("/func4", async (req, res) => {
   res.json(festivals);
 });
 
+router.get("/func5", async (req, res) => {
+  const { clientId, hiredFriendId, dateStart, dateEnd } = req.query;
+  const meetings = await HiringMeeting.findAll({
+    raw: true,
+    attributes: ["meeting.name"],
+    include: [
+      {
+        model: Meeting,
+        attributes: [],
+        where: {
+          date: {
+            [Op.between]: [dateStart, dateEnd],
+          },
+        },
+      },
+    ],
+    where: {
+      hiredFriendId,
+      clientId,
+    },
+  });
+  res.json(meetings);
+});
+
 router.get("/all", async (req, res) => {
   const hiringMeetings = await HiringMeeting.findAll({ raw: true });
   res.json(hiringMeetings);
