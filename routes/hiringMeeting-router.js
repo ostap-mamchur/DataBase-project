@@ -106,6 +106,29 @@ router.post("/", async (req, res) => {
   res.json("Success");
 });
 
+router.get("/func4", async (req, res) => {
+  const festivals = await HiringMeeting.findAll({
+    raw: true,
+    attributes: [
+      [
+        sequelize.fn("DATE_TRUNC", "MONTH", sequelize.col("meeting.date")),
+        "month",
+      ],
+      [sequelize.fn("COUNT", "month"), "count"],
+    ],
+    include: [
+      {
+        model: Meeting,
+        attributes: [],
+      },
+    ],
+    group: [
+      "month" /* sequelize.fn("DATE_TRUNC", "MONTH", sequelize.col("meeting.date")) */,
+    ],
+  });
+  res.json(festivals);
+});
+
 router.get("/all", async (req, res) => {
   const hiringMeetings = await HiringMeeting.findAll({ raw: true });
   res.json(hiringMeetings);
