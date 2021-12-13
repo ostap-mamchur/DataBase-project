@@ -37,6 +37,31 @@ router.get("/func1", async (req, res) => {
   res.json(clients);
 });
 
+router.get("/func3", async (req, res) => {
+  const { hiredFriendId, number, dateStart, dateEnd } = req.query;
+  const meetings = await HiringMeeting.findAll({
+    raw: true,
+    attributes: ["meeting.name"],
+    include: [
+      {
+        model: Meeting,
+        attributes: [],
+        where: {
+          date: {
+            [Op.between]: [dateStart, dateEnd],
+          },
+        },
+      },
+    ],
+    where: {
+      hiredFriendId,
+    },
+    group: ["meeting.name"],
+    having: sequelize.literal(`COUNT(*) >= ${number}`),
+  });
+  res.json(meetings);
+});
+
 router.get("/func2", async (req, res) => {
   const { hiredFriendId, number, dateStart, dateEnd } = req.query;
   const clients = await HiringMeeting.findAll({
@@ -64,7 +89,7 @@ router.get("/func2", async (req, res) => {
     having: sequelize.literal(`COUNT(*) >= ${number}`),
   });
   res.json(clients);
-})
+});
 
 router.post("/", async (req, res) => {
   const { meetingId, hiredFriendId, clientId } = req.body;
