@@ -19,5 +19,6 @@ Holiday.init(
 );
 
 HiredFriend.hasMany(Holiday);
+Holiday.belongsTo(HiredFriend);
 
 module.exports = Holiday;

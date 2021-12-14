@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
     });
     const group = await Group.create({ name: "Dream Team" });
 
-    group.setHired_friends([hiredFriend]);
+    group.addHired_friends([hiredFriend]);
 
     // for (let key in group) {
     //     console.log(key, group[key]);

@@ -123,7 +123,7 @@ router.get("/func4", async (req, res) => {
       },
     ],
     group: [
-      "month" /* sequelize.fn("DATE_TRUNC", "MONTH", sequelize.col("meeting.date")) */,
+      "month",
     ],
   });
   res.json(festivals);
